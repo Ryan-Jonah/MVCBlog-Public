@@ -5,14 +5,90 @@ This is a public repository created for documentation purposes and to demonstrat
 Below you will find implementation details and code examples used throughout the project
 
 ##### Table of Contents  
-1. [Models](#models)  
+1. [Overview](#overview)  
+    i.[Home Page](#homePage)  
+    ii.[About Page](#aboutPage)  
+    iii.[Blogs Page](#blogsPage)  
+    iv.[Contact Page](#contactPage)  
+    v.[Register Page](#registerPage)  
+    vi.[Login Page](#loginPage)  
+    vii.[Search Page](#searchPage)  
+    viii.[Post Page](#postPage)  
+2. [Models](#models)  
     i. [BlogUser](#blogUserModel)  
     ii. [Blog](#blogModel)  
     iii. [Post](#postModel)  
     iv. [Comment](#commentModel)  
     v. [Tag](#tagModel)  
-2. [Services](#services)
-3. [Pages](#pages)
+3. [Services](#services)  
+
+<a name="overview"/> 
+
+# Overview
+
+### The project follows a standard blog layout which consists of the following pages:
+
+<a name="homePage"/> 
+
+#### Home Page
+
+Entry point to the website.
+
+Contains a carousel linking to the top 4 most recent posts on the site with an list section to further expand on the posts shown
+
+Here we are also able to see the header and browse by tag sections, which are present on all pages through the use of our \_layout.cshtml file.
+
+<a name="aboutPage"/> 
+
+#### About Page
+
+Simple page containing information pertaining to myself and the project
+
+<a name="blogsPage"/> 
+
+#### Blogs Page
+
+Page which displays all user created blogs.
+
+Functionality is yet to be implemented for user created blogs.
+
+<a name="contactPage"/> 
+
+#### Contact Page
+
+A page used to send information directly to the site owner's email. 
+
+This page makes use of the EmailService to handle incoming messages. 
+
+<a name="registerPage"/> 
+
+#### Register Page
+
+Used to register a new user. This page was created in scaffolding.
+
+<a name="loginPage"/> 
+
+#### Login Page
+
+Used to login. This page was created during scaffolding.
+
+<a name="searchPage"/> 
+
+#### Search Page
+
+A page which shows results when using the search function or when selecting a tag. 
+
+This page is defined within the PostsController, and using the BlogSearchService to curate a list of results.
+
+<a name="postPage"/> 
+
+#### Post Page
+
+Page which contains the most functionality and created whenever a new post is added.
+
+Displays all information related to the post including it's content and the user who posted it.
+
+This page may be thought of as the comment page as well since all commments associated with the post are displayed here. Comments do not contain a page implementation on their own.
 
 <a name="models"/> 
 
@@ -68,8 +144,6 @@ These components are outlined as follows:
         public virtual ICollection<Blog> Blogs { get; set; } = new HashSet<Blog>();
         public virtual ICollection<Post> Posts { get; set; } = new HashSet<Post>();
         public virtual ICollection<Comment> Comments { get; set; } = new HashSet<Comment>();
-
-
     }
 ```
 
@@ -121,9 +195,7 @@ Contains information for the user's name, profile image, social media links, and
 
         //Children
         public virtual ICollection<Post> Posts { get; set; } = new HashSet<Post>(); //Collection of Post children
-
     }
-}
 ```
 
 Primary model used to contain all information pertaining to an individual blog; including a name, description, creation and update dates, and blog image data.
@@ -135,15 +207,6 @@ Also contains referential properties to the owner(BlogUser) and Posts.
 ### Post Model:
 
 ```
-using Microsoft.AspNetCore.Http;
-using MVCBlog.Enums;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace MVCBlog.Models
-{
     /// <summary>
     /// Post model used for database migrations
     /// </summary>
@@ -205,7 +268,6 @@ namespace MVCBlog.Models
         public virtual ICollection<Comment> Comments { get; set; } = new HashSet<Comment>();
         public virtual ICollection<Tag> Tags { get; set; } = new HashSet<Tag>();
     }
-}
 ```
 
 Model resposible for Post related information. This includes the Blog it belongs to and its owner, a title, an abstract, the Post content, creation and update dates, readtime, readystatus, slug, views, likes, and image data.
@@ -230,15 +292,6 @@ The Post contains 2 parent relationships; to Blogs and BlogUsers, as well as 2 c
 ### Comment Model: 
 
 ```
-using Microsoft.AspNetCore.Identity;
-using MVCBlog.Enums;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace MVCBlog.Models
 {
     /// <summary>
     /// <para>Self-referencing relationship: A relationship in which the dependent and the principal entity types are the same.</para>
@@ -299,8 +352,6 @@ namespace MVCBlog.Models
 
         public virtual HashSet<Comment> Replies { get; set; } = new HashSet<Comment>();
     }
-}
-
 ```
 
 The comment model is unique in that it encorporates a self-referential relationship - meaning it refers to entities of the same type. This is due to the fact that comments may be nested and thus a way to determine the parent and child level comments is required.
@@ -369,13 +420,12 @@ namespace MVCBlog.Models
         public virtual Post Post { get; set; } //Navigate to Post attached to Tag
         public virtual BlogUser BlogUser { get; set; }
     }
-}
 ```
 Simple model used to group and search for posts on the site. Contains a definition for the tag text as well as parent reationships to Post and BlogUser it belongs to.
 
 <a name="services"/> 
 
-## Blog Servies
+## Blog Services
 
 ASP.NET as a framework makes heavy use of a concept known as **dependancy injection(DI)** and **Iversion of Control(IoC)**.
 
@@ -414,6 +464,3 @@ Paying attention specifically to the comment service; we see we have defined a p
 
 Below I will outline the services that I have defined for this particular project.
 
-<a name="pages"/> 
-
-## Blog Pages
