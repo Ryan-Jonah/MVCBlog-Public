@@ -6,14 +6,6 @@ Below you will find implementation details and code examples used throughout the
 
 ##### Table of Contents  
 1. [Overview](#overview)  
-    i.[Home Page](#homePage)  
-    ii.[About Page](#aboutPage)  
-    iii.[Blogs Page](#blogsPage)  
-    iv.[Contact Page](#contactPage)  
-    v.[Register Page](#registerPage)  
-    vi.[Login Page](#loginPage)  
-    vii.[Search Page](#searchPage)  
-    viii.[Post Page](#postPage)  
 2. [Models](#models)  
     i. [BlogUser](#blogUserModel)  
     ii. [Blog](#blogModel)  
@@ -28,67 +20,16 @@ Below you will find implementation details and code examples used throughout the
 
 ### The project follows a standard blog layout which consists of the following pages:
 
-<a name="homePage"/> 
-
-#### Home Page
-
-Entry point to the website.
-
-Contains a carousel linking to the top 4 most recent posts on the site with an list section to further expand on the posts shown
-
-Here we are also able to see the header and browse by tag sections, which are present on all pages through the use of our \_layout.cshtml file.
-
-<a name="aboutPage"/> 
-
-#### About Page
-
-Simple page containing information pertaining to myself and the project
-
-<a name="blogsPage"/> 
-
-#### Blogs Page
-
-Page which displays all user created blogs.
-
-Functionality is yet to be implemented for user created blogs.
-
-<a name="contactPage"/> 
-
-#### Contact Page
-
-A page used to send information directly to the site owner's email. 
-
-This page makes use of the EmailService to handle incoming messages. 
-
-<a name="registerPage"/> 
-
-#### Register Page
-
-Used to register a new user. This page was created in scaffolding.
-
-<a name="loginPage"/> 
-
-#### Login Page
-
-Used to login. This page was created during scaffolding.
-
-<a name="searchPage"/> 
-
-#### Search Page
-
-A page which shows results when using the search function or when selecting a tag. 
-
-This page is defined within the PostsController, and using the BlogSearchService to curate a list of results.
-
-<a name="postPage"/> 
-
-#### Post Page
-
-Page which contains the most functionality and created whenever a new post is added.
-
-Displays all information related to the post including it's content and the user who posted it.
-
-This page may be thought of as the comment page as well since all commments associated with the post are displayed here. Comments do not contain a page implementation on their own.
+| **Page** | **Function** |
+| ---  |    ---   |
+| Home Page | Entry point to the website. Contains a carousel linking to the top 4 most recent posts on the site with an list section to further expand on the posts shown. Here we are also able to see the header and browse by tag sections, which are present on all pages through the use of our \_layout.cshtml file.|
+| About Page | Simple page containing information pertaining to myself and the project. |
+| Blogs Page | Page which displays all user created blogs. Functionality is yet to be implemented for user created blogs.|
+| Contact Page |A page used to send information directly to the site owner's email. This page makes use of the EmailService to handle incoming messages. |
+| Register Page | Used to register a new user. This page was created in scaffolding.|
+| Login Page | Used to login. This page was created during scaffolding.|
+| Search Page | A page which shows results when using the search function or when selecting a tag. This page is defined within the PostsController, and using the BlogSearchService to curate a list of results.|
+| Post Page |Page which contains the most functionality and created whenever a new post is added. Displays all information related to the post including it's content and the user who posted it. This page may be thought of as the comment page as well since all commments associated with the post are displayed here. Comments do not contain a page implementation on their own.|
 
 <a name="models"/> 
 
