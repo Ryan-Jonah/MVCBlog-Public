@@ -1,0 +1,77 @@
+﻿@model IEnumerable<MVCBlog.Models.Blog>
+@inject MVCBlog.Services.IImageService _imageService
+
+@{ ViewData["Title"] = "Index"; }
+
+<!--Main Blogs Info-->
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="bg-primary-soft p-3 rounded-3 text-center">
+                    <h1 class="text-primary">Personal Blog</h1>
+                    <h5 class="text-reset">Writings pertaining to technology and development</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!--Main Blogs-->
+<section class="position-relative pt-0">
+    <div class="container">
+        <div class="row">
+            <!-- Main Post START -->
+            <div class="col-12">
+                @foreach (var blog in Model)
+                {<!-- Card item START -->
+                    <div class="card border rounded-3 up-hover p-4 mb-4 height300px">
+                        <div class="row g-3 h-100">
+                            <div class="col-lg-8">
+                                <!-- Title -->
+                                <h2 class="card-title">
+                                    <a asp-action="Details" asp-route-Id="@blog.Id" class="btn-link text-reset stretched-link">@blog.Name</a>
+                                </h2>
+                                <!-- Author info -->
+                                <div class="d-flex align-items-center position-relative mt-3">
+                                    <div class="avatar me-2">
+                                        <img class="avatar-img rounded-circle" src="@_imageService.DecodeImage(blog.BlogUser.ImageData, blog.BlogUser.ContentType)" alt="avatar">
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-1"><a href="#" class="stretched-link text-reset btn-link">@blog.BlogUser.FullName</a></h5>
+                                        <ul class="nav align-items-center small">
+                                            <li class="nav-item me-3">Since @blog.Created.ToString("D")</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Image -->
+                            <div class="col-md-6 col-lg-4 h-100 d-flex justify-content-center">
+                                @if (blog.ImageData is not null)
+                                {
+                            <img class="rounded-3 h-100" src="@_imageService.DecodeImage(blog.ImageData, blog.ContentType)" alt="Card image">
+                                }
+                            </div>
+                        </div>
+                    </div> <!-- Card item END -->
+                 }
+            </div>
+            <!-- Main Post END -->
+        </div> <!-- Row end -->
+    </div>
+</section>
+
+<!--User Blogs-->
+<section class="pt-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="bg-primary-soft p-3 rounded-3 text-center">
+                    <h1 class="text-primary">User Contributions</h1>
+                    <h5 class="text-reset">Check out these blogs written by the community</h5>
+                </div>
+            </div>
+        </div>
+        <a asp-action="Create" asp-controller="Blogs" type="button" class="btn btn-primary-soft w-100 my-3">New Blog<i class="bi bi-arrow-down-circle ms-2 align-middle"></i></a>
+    </div>
+</section>

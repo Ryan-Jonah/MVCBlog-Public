@@ -1,0 +1,92 @@
+﻿@model MVCBlog.Models.Blog
+@inject MVCBlog.Services.IImageService _imageService
+@inject MVCBlog.Services.ISlugService _slugService
+
+@{ ViewData["Title"] = "Details"; }
+
+<!--Blog Details-->
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="bg-primary-soft p-3 rounded-3 text-center">
+                    <h1 class="text-primary">@Model.Name</h1>
+                    <nav class="d-flex justify-content-center">
+                        <ol class="list-group-borderless m-0 p-0">
+                            <li class="list-group-item"><h5 class="text-reset">Posts: @Model.Posts.Count</h5></li>
+                            <li class="list-group-item"><a asp-action="Index" asp-controller="Blogs"><i class="bi bi-house me-1"></i>Back to blogs</a></li>
+                            @if (User.Identity == Model.BlogUser)
+                            {
+                                <li class="list-group-item"><a asp-action="Create" asp-controller="Posts"><i class="bi bi-plus me-1"></i>New Post</a></li>}
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!--Blog Posts-->
+<section class="position-relative pt-0">
+    <div class="container">
+        <div class="row">
+
+            <!-- Main Post START -->
+            <div class="col-12">
+
+                @foreach (var post in Model.Posts)
+                {<!-- Card item START -->
+                <div class="card border rounded-3 up-hover p-4 mb-4">
+                    <div class="row g-3 h-100">
+
+                        <!--Details-->
+                        <div class="col-6">
+                            <!-- Tags -->
+                            @foreach (var tag in post.Tags)
+                            {
+                                <a href="#" class="badge bg-danger mb-2"><i class="fas fa-circle me-2 small fw-bold"></i>@tag.Text</a>}
+
+                                <!-- Title -->
+                                <h2 class="card-title">
+                                    <a asp-controller="Posts" asp-action="Details" asp-route-slug="@post.Slug" class="btn-link text-reset stretched-link">@post.Title</a>
+                                </h2>
+
+                                <!-- Author info -->
+                                <div class="d-flex align-items-center position-relative mt-3">
+                                    <div class="avatar me-2">
+                                        <img class="avatar-img rounded-circle" src="@_imageService.DecodeImage(post.BlogUser.ImageData, post.BlogUser.ContentType)" alt="avatar">
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-1"><a href="#" class="stretched-link text-reset btn-link">@post.BlogUser.FullName</a></h5>
+                                        <ul class="nav align-items-center small">
+                                            <li class="nav-item me-3">@post.Created.ToString("D")</li>
+                                            <li class="nav-item"><i class="far fa-clock me-1"></i>@post.ReadTime Min Read</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                        </div>
+
+                        <!-- Content -->
+                        <div class="col-3">
+                            <p>@Html.Raw(post.Content)</p>
+                        </div>
+
+                        <!-- Image -->
+                        <div class="col-3 h-100 d-flex justify-content-center">
+                            <img class="rounded-3 h-100 img-fluid" src="@_imageService.DecodeImage(post.ImageData, post.ContentType)" alt="Card image">
+                        </div>
+
+                    </div>
+                    <!-- Card item END -->
+                </div>}
+
+                <!-- New Post -->
+                <a type="button" asp-action="Create" asp-controller="Posts" class="btn btn-md btn-primary-soft w-100">New Post</a>
+
+            </div>
+            <!-- Main Post END -->
+        </div> 
+        <!-- Row end -->
+    </div>
+</section>

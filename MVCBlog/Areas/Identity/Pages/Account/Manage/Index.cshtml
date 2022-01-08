@@ -1,0 +1,45 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Profile Information";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+
+<div class="container">
+    <h3>@ViewData["Title"]</h3>
+    <partial name="_StatusMessage" model="Model.StatusMessage" />
+    <div class="row">
+
+        <div class="col-md-8">
+            <form id="profile-form" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group my-2">
+                    <label asp-for="Input.UserName"></label>
+                    <input asp-for="Input.UserName" class="form-control" />
+                    <span asp-validation-for="Input.UserName" class="text-danger"></span>
+                </div>
+                <div class="form-group my-2">
+                    <label asp-for="Input.PhoneNumber"></label>
+                    <input asp-for="Input.PhoneNumber" class="form-control" />
+                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group my-2">
+                    <label asp-for="Input.ImageFile"></label>
+                    <input type="file" asp-for="Input.ImageFile" class="form-control" accept=".jpg, .jpeg, .png, .gif, .svg" />
+                    <span asp-validation-for="Input.ImageFile" class="text-danger"></span>
+                </div>
+                <button id="update-profile-button" type="submit" class="btn btn-primary mt-3 w-100">Save</button>
+            </form>
+        </div>
+
+        <div class="col-md-4 d-flex justify-content-center bg-info-soft rounded-3">
+            <img class="m-2 avatar avatar-xxxl float-start me-3 rounded-circle d-flex mt-5" style="object-fit: cover;" src="@Model.ImageFile" />
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

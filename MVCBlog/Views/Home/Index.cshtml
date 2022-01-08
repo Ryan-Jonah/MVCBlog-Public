@@ -1,0 +1,180 @@
+﻿@using MVCBlog.Models
+@using MVCBlog.Services
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@using X.PagedList.Web.Common
+
+@model IPagedList<Post>
+
+@inject IImageService _imageService
+
+@{ ViewData["Title"] = "Home Page"; }
+
+<!--Carousel-->
+<section class="card-grid">
+    <!--Newest Posts Title-->
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="bg-primary-soft p-3 rounded-3 text-center">
+                    <h1 class="text-primary">Newest Posts</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Newest Posts Carousel-->
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="tiny-slider arrow-hover arrow-blur arrow-white arrow-round rounded-3 overflow-hidden">
+                    <div class="tiny-slider-inner"
+                            data-autoplay="true"
+                            data-hoverpause="true"
+                            data-gutter="0"
+                            data-arrow="true"
+                            data-dots="false"
+                            data-items="1">
+
+                        <!-- Slides -->
+                        @* Showing 4 most recent posts *@
+                        @foreach (var post in Model.Take(4))
+                        {
+                    <div class="card card-overlay-bottom card-bg-scale h-400 h-sm-500 h-md-600 rounded-0"
+                            style="background-image: url(@_imageService.DecodeImage(post.ImageData, post.ContentType));
+                                    background-position: center left; background-size: cover;">
+
+                        <!-- Card Image overlay -->
+                        <div class="card-img-overlay d-flex align-items-center p-3 p-sm-5">
+                            <div class="w-100 mt-auto">
+                                <div class="col-md-10 col-lg-7">
+
+                                    <!-- Card title -->
+                                    <h2 class="text-white display-5"><a asp-controller="Posts" asp-action="Details" asp-route-slug="@post.Slug" class="btn-link text-reset fw-normal">@post.Title</a></h2>
+                                    <p class="text-white">@post.Abstract</p>
+
+                                    <!-- Card category -->
+                                    <form asp-action="SearchIndex" asp-controller="Posts">
+                                        @foreach (var tag in post.Tags)
+                                        {
+                                        <button name="searchTerm" value="@tag.Text" class="btn btn-xs btn-info mb-2"><i class="fas fa-circle me-2 small fw-bold"></i>@tag.Text</button>}
+                                    </form>
+
+                                    <!-- Card info -->
+                                    <ul class="nav nav-divider text-white-force align-items-center d-none d-sm-inline-block">
+                                        <li class="nav-item">
+                                            <div class="nav-link">
+                                                <div class="d-flex align-items-center text-white position-relative">
+                                                    <div class="avatar avatar-sm">
+                                                        <img class="avatar-img rounded-circle" src=@_imageService.DecodeImage(post.BlogUser.ImageData, post.BlogUser.ContentType) alt="avatar">
+                                                    </div>
+                                                    <span class="ms-3">by <a href="#" class="stretched-link text-reset btn-link">@post.BlogUser.FullName</a></span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="nav-item">@post.Created.ToString("MMMM dd, yyyy")</li>
+                                        <li class="nav-item"><i class="far fa-clock me-1"></i>@post.ReadTime Min Read</li>
+                                    </ul>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- Slides End -->}
+
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>
+</section>
+
+<!--Linebreak-->
+<div class="container">
+    <hr class="mb-5" />
+</div>
+
+<!--List-->
+<section class="pt-0">
+    <!--Newest Posts Title-->
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="bg-primary-soft p-3 rounded-3 text-center">
+                    <h1 class="text-primary">All Posts</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Newest Posts List-->
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                @{ foreach (var post in Model)
+                    { <!-- Card item START -->
+                        <div class="card border rounded-3 up-hover p-4 mb-4">
+                            <div class="row g-3 h-100">
+                                <div class="col-6">
+
+                                    <!-- Title -->
+                                    <h2 class="card-title">
+                                        <a asp-controller="Posts" asp-action="Details" asp-route-slug="@post.Slug" class="btn-link text-reset stretched-link">@post.Title</a>
+                                    </h2>
+
+                                    <!-- Blog -->
+                                    <a asp-controller="Blogs" asp-action="Details" asp-route-id="@post.Blog.Id" class="btn btn-link text-reset mb-3" style="z-index: 2"><h6 class="text-info">@post.Blog.Name</h6></a>
+
+                                    <!-- Categories -->
+                                    <div class="d-flex align-items-center position-relative my-1" style="z-index: 2">
+                                        <form asp-action="SearchIndex" asp-controller="Posts">
+                                            @{ foreach (var tag in post.Tags)
+                                                {
+                                <button name="searchTerm" value="@tag.Text" class="btn btn-xs btn-info"><i class="fas fa-circle me-2 small fw-bold"></i>@tag.Text</button> } }
+                                        </form>
+                                    </div>
+
+                                    <!-- Author info -->
+                                    <div class="d-flex align-items-center position-relative mt-3">
+                                        <div class="avatar me-2">
+                                            <img class="avatar-img rounded-circle" src=@_imageService.DecodeImage(post.BlogUser.ImageData, post.BlogUser.ContentType) alt="Avatar">
+                                        </div> 
+                                        <div>
+                                            <h5 class="mb-1"><a href="#" class="stretched-link text-reset btn-link">@post.BlogUser</a></h5>
+                                            <ul class="nav align-items-center small">
+                                                <li class="nav-item me-3">@post.Created.ToString("MMMM dd, yyyy")</li>
+                                                <li class="nav-item"><i class="far fa-clock me-1"></i>@post.ReadTime min read</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <!-- Detail -->
+                                <div class="col-3">
+                                    @Html.Raw(post.Content)
+                                </div>
+
+                                <!-- Image -->
+                                <div class="col-3 h-100 d-flex justify-content-center">
+                                    <img class="rounded-3 h-100 img-fluid" src=@_imageService.DecodeImage(post.ImageData, post.ContentType) alt="Card image">
+                                </div>
+
+                            </div>
+                        </div> <!-- Card item END --> } }
+
+                <div>
+                    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+                </div>
+
+                <div>
+                    @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page }),
+                        new PagedListRenderOptions
+                        {
+                            LiElementClasses = new string[] { "page-item" },
+                            PageClasses = new string[] { "page-link" }
+                        })
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

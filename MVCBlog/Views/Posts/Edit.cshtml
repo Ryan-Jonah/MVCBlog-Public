@@ -1,0 +1,111 @@
+﻿@model MVCBlog.Models.Post
+@using MVCBlog.Enums
+
+@{ ViewData["Title"] = "Edit"; }
+
+<h1 class=" d-flex justify-content-center">Edit</h1>
+
+<h4 class=" d-flex justify-content-center">Post</h4>
+<hr />
+<div class="row  d-flex justify-content-center">
+    <div class="col-md-6">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <!--Post Validation-->
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            @*PK is passed to the controller without user input*@
+            <input type="hidden" asp-for="Id" />
+
+            <!--Post Blog-->
+            <div class="form-group">
+                <label asp-for="BlogId" class="control-label"></label>
+                <select asp-for="BlogId" class="form-control" asp-items="ViewBag.BlogId"></select>
+                <span asp-validation-for="BlogId" class="text-danger"></span>
+            </div>
+            <!--Post Title-->
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <!--Post Abstract-->
+            <div class="form-group">
+                <label asp-for="Abstract" class="control-label"></label>
+                <textarea asp-for="Abstract" class="form-control"></textarea>
+                <span asp-validation-for="Abstract" class="text-danger"></span>
+            </div>
+            <!--Post ReadTime-->
+            <div class="form-group">
+                <label asp-for="ReadTime" class="control-label"></label>
+                <input asp-for="ReadTime" class="form-control">
+                <span asp-validation-for="ReadTime" class="text-danger"></span>
+            </div>
+            <!--Post Content-->
+            <div class="form-group">
+                <label asp-for="Content" class="control-label"></label>
+                <textarea id="summernote" asp-for="Content" class="form-control"></textarea>
+                <span asp-validation-for="Content" class="text-danger"></span>
+            </div>
+            <!--Post ReadyStatus-->
+            <div class="form-group">
+                <label asp-for="ReadyStatus" class="control-label"></label>
+                <select data-val="false" asp-for="ReadyStatus" asp-items="Html.GetEnumSelectList<ReadyStatus>()" class="form-control"></select>
+                <span asp-validation-for="ReadyStatus" class="text-danger"></span>
+            </div>
+            <!--Post Image-->
+            <div class="form-group">
+                <label asp-for="Image" class="control-label"></label>
+                <input type="file" name="newImage" class="form-control" accept=".jpg, .jpeg, .png, .gif, .svg" />
+                <span asp-validation-for="Image" class="text-danger"></span>
+            </div>
+
+            <!--Post Tags-->
+            <div class="form-group my-2">
+                <div class="row">
+                    <div class="col">
+                        <label class="control-label">Manage Tags</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="row">
+                            <div class="col>">
+                                <input type="text" class="form-control" id="TagEntry" />
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col d-grid">
+                                <button onclick="AddTag()" name="add" type="button" class="button btn btn-dark btn-md btn-block">Add</button>
+                            </div>
+                            <div class="col d-grid">
+                                <button onclick="RemoveTag()" name="remove" type="button" class="button btn btn-dark btn-md btn-block">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        @*tagvalues is case INSENSITIVE!name attribute does not care about uppercase or lowercase in either JS or C#*@
+                        <select name="tagValues" class="form-select" id="tagList" multiple></select>
+                    </div>
+                </div>
+            </div>
+
+            <!--Submit-->
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a class=" d-flex justify-content-center" asp-action="Details" asp-route-slug="@Model.Slug">Back to List</a>
+</div>
+
+@section Scripts {
+    <script>
+        let tagValues = '@ViewData["TagValues"]';
+    </script>
+    <script src="~/js/custom.js"></script>
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
