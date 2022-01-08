@@ -4,13 +4,27 @@ This is a public repository created for documentation purposes and to demonstrat
 
 Below you will find implementation details and code examples used throughout the project
 
+##### Table of Contents  
+1. [Models](#models)  
+    i. [BlogUser](#blogUserModel)  
+    ii. [Blog](#blogModel)  
+    iii. [Post](#postModel)  
+    iv. [Comment](#commentModel)  
+    v. [Tag](#tagModel)  
+2. [Services](#services)
+3. [Pages](#pages)
+
+<a name="models"/> 
+
 ## Blog Models
 
 ### This project makes use of several model classes which each pertain to a specific function of the blog
 
-These components are outlines as follows:
+These components are outlined as follows:
 
-### BlogUser:
+<a name="blogUserModel"/> 
+
+### BlogUser Model:
 
 ```
     /// <summary>
@@ -63,7 +77,9 @@ Top-level model used to identity registered users which inherits from *Microsoft
 
 Contains information for the user's name, profile image, social media links, and referential relationships to the Blogs, Posts and/or Comments the user owns.
 
-### Blog:
+<a name="blogModel"/> 
+
+### Blog Model:
 
 ```
     /// <summary>
@@ -114,7 +130,9 @@ Primary model used to contain all information pertaining to an individual blog; 
 
 Also contains referential properties to the owner(BlogUser) and Posts.
 
-### Post:
+<a name="postModel"/> 
+
+### Post Model:
 
 ```
 using Microsoft.AspNetCore.Http;
@@ -207,7 +225,9 @@ Model resposible for Post related information. This includes the Blog it belongs
 
 The Post contains 2 parent relationships; to Blogs and BlogUsers, as well as 2 children relationships pointing to Comments and Tags, respectively. 
 
-### Comment:
+<a name="commentModel"/> 
+
+### Comment Model: 
 
 ```
 using Microsoft.AspNetCore.Identity;
@@ -315,3 +335,85 @@ The comment model contains properties for the comment body, create, update, mode
 ```
 
 Comments contain parental relationships to their Post, BlogUser(creator) and Moderator(in the case of a modified comment), as well as the parent comment. Comments also contain recursive relationship to all comments which are a within its reply chain defined as **Replies**.
+
+<a name="tagModel"/> 
+
+### Tag Model
+
+```
+using Microsoft.AspNetCore.Identity;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace MVCBlog.Models
+{
+    /// <summary>
+    /// Tag model use for database migrations
+    /// </summary>
+    public class Tag
+    {
+        public int Id { get; set; } //PK
+        public int PostId { get; set; } //FK
+        public string BlogUserId { get; set; } //FK
+
+        [Required]
+        [StringLength(25, ErrorMessage = "The {0} must be between {2} and {1} characters.", MinimumLength = 2)]
+        public string Text { get; set; }
+
+        //Navigation/Relationship Properties
+
+        //Parents
+        public virtual Post Post { get; set; } //Navigate to Post attached to Tag
+        public virtual BlogUser BlogUser { get; set; }
+    }
+}
+```
+Simple model used to group and search for posts on the site. Contains a definition for the tag text as well as parent reationships to Post and BlogUser it belongs to.
+
+<a name="services"/> 
+
+## Blog Servies
+
+ASP.NET as a framework makes heavy use of a concept known as **dependancy injection(DI)** and **Iversion of Control(IoC)**.
+
+These concepts allow components of the application to recieve other objects for which they are dependant on. Rather than instantiating an object as normal however, services are instead registered within **startup.cs** using an interface as well as an implementation of that interface. This is known as **Decoupling**, and allows different implementations of a given interface to be easily swapped and tested. These services can then be implemented using **Constructor Injection**. For example: 
+
+```
+    public class CommentsController : Controller
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<BlogUser> _userManager;
+        private readonly ICommentService _commentService; 
+
+        public CommentsController(ApplicationDbContext context, UserManager<BlogUser> userManager, ICommentService commentService)
+        {
+            _context = context;
+            _userManager = userManager;
+            _commentService = commentService;
+        }
+```
+
+Here we can see our database context, usermananger and custom comment service all definied as private fields within the CommentsController. 
+
+Paying attention specifically to the comment service; we see we have defined a private readonly variable of \_commentService. This variable is the ICommentService, and is assigned a value through the commentService parameter within the constructor. Because this is the interface and not the implementation of the comment service, it is considered **Decoupled**, and can easily be swapped out in startup.cs if we ever decide to use a new implementation of the service. Pretty cool!
+
+*Defining the comment service in startup.cs*
+
+```
+        public void ConfigureServices(IServiceCollection services)
+        {
+        
+        //Other code...
+        
+            //Register Comment Service
+            services.AddScoped<ICommentService, CommentService>();
+```
+
+Below I will outline the services that I have defined for this particular project.
+
+<a name="pages"/> 
+
+## Blog Pages
