@@ -326,21 +326,13 @@ The comment model contains properties for the comment body, create, update, mode
     }
 ```
 
-Comments contain parental relationships to their Post, BlogUser(creator) and Moderator(in the case of a modified comment), as well as the parent comment. Comments also contain recursive relationship to all comments which are a within its reply chain defined as **Replies**.
+Comments contain parental relationships to their Post, BlogUser(creator) and Moderator(in the case of a modified comment), as well as the parent comment. Comments also contain a recursive relationship to all comments within its reply chain which is defined as **Replies**.
 
 <a name="tagModel"/> 
 
 ### Tag Model
 
 ```
-using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace MVCBlog.Models
 {
     /// <summary>
     /// Tag model use for database migrations
@@ -368,7 +360,7 @@ Simple model used to group and search for posts on the site. Contains a definiti
 
 ## Blog Services
 
-ASP.NET as a framework makes heavy use of a concept known as **dependancy injection(DI)** and **Iversion of Control(IoC)**.
+ASP.NET as a framework makes heavy use of a concept known as **dependancy injection(DI)** and **Inversion of Control(IoC)**.
 
 These concepts allow components of the application to recieve other objects for which they are dependant on. Rather than instantiating an object as normal however, services are instead registered within **startup.cs** using an interface as well as an implementation of that interface. This is known as **Decoupling**, and allows different implementations of a given interface to be easily swapped and tested. These services can then be implemented using **Constructor Injection**. For example: 
 
@@ -403,5 +395,5 @@ Paying attention specifically to the comment service; we see we have defined a p
             services.AddScoped<ICommentService, CommentService>();
 ```
 
-Below I will outline the services that I have defined for this particular project.
+#### Below I will outline the services that I have defined for this particular project.
 
