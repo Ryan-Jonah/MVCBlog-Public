@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace MVCBlog.Models
 {
     /// <summary>
-    /// Post model use for database migrations
+    /// Post model used for database migrations
     /// </summary>
     public class Post
     {

@@ -26,6 +26,5 @@ namespace MVCBlog.Enums
         Shaming,
         [Description("Other Type of Moderation")]
         Other
-
     }
 }

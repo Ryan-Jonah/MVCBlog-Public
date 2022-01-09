@@ -70,7 +70,7 @@ namespace MVCBlog.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Contact(ContactMe model)
         {
-            //Send email to site ownner
+            //Send email to site owner
             model.Message = $"{model.Message} <hr/> Phone: {model.Phone}";
             await _emailSender.SendContactEmailAsync(model.Email, model.Name, model.Subject, model.Message);
             return RedirectToAction("index");
