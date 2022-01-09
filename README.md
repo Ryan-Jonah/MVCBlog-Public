@@ -301,7 +301,7 @@ The Post contains 2 parent relationships; to Blogs and BlogUsers, as well as 2 c
     }
 ```
 
-The comment model is unique in that it encorporates a self-referential relationship - meaning it refers to entities of the same type. This is due to the fact that comments may be nested and thus a way to determine the parent and child level comments is required.
+The comment model is unique in that it incorporates a self-referential relationship - meaning it refers to entities of the same type. This is due to the fact that comments may be nested and thus a way to determine the parent and child level comments is required.
 
 The comment model contains properties for the comment body, create, update, moderated and deleted dates, moderated body, moderationtype, and comment level.
 
