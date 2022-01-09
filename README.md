@@ -13,6 +13,12 @@ Below you will find implementation details and code examples used throughout the
     iv. [Comment](#commentModel)  
     v. [Tag](#tagModel)  
 3. [Services](#services)  
+    i. [Data Service](#dataService)  
+    ii. [Image Service](#imageService)  
+    iii. [Mail Service](#mailService)  
+    iv. [Search Service](#searchService)  
+    v. [Comment Service](#commentService)  
+    vi. [Slug Service](#slugService)  
 
 <a name="overview"/> 
 
@@ -397,3 +403,204 @@ Paying attention specifically to the comment service; we see we have defined a p
 
 #### Below I will outline the services that I have defined for this particular project.
 
+
+<a name="dataService"/> 
+
+### Data Service
+
+```
+    public class DataService
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<BlogUser> _userManager;
+        private readonly IImageService _imageService;
+        private readonly IConfiguration _configuration;
+
+        public DataService(
+            ApplicationDbContext context, 
+            RoleManager<IdentityRole> roleManager, 
+            UserManager<BlogUser> userManager, 
+            IImageService imageService, 
+            IConfiguration configuration)
+        {
+            _context = context;
+            _roleManager = roleManager;
+            _userManager = userManager;
+            _imageService = imageService;
+            _configuration = configuration;
+        }
+
+        /// <summary>
+        /// Wrapper for DataService methods
+        /// </summary>
+        /// <returns></returns>
+        public async Task ManageDataAsync()
+        {
+            //Migrate/Create database if needed - Equivalent to running update-database in EF Core
+            await _context.Database.MigrateAsync();
+
+            //Seed Data to database
+            await SeedRolesAsync();
+            await SeedUsersAsync();
+        }
+
+        private async Task SeedRolesAsync()
+        {
+            //If roles exist, do not seed any roles
+            if (_context.Roles.Any()) 
+                return;
+
+            //If no roles exist, seed data into the database
+            foreach (var role in Enum.GetNames(typeof(BlogRoll)))
+            {
+                //Use the Role Manager to create roles
+                await _roleManager.CreateAsync(new IdentityRole(role));
+            }
+        }
+
+        private async Task SeedUsersAsync()
+        {
+            //If users exist, do not seed any users
+            if (_context.Users.Any())
+            {
+
+            }
+            else
+            {
+                //...
+                //Create instance of BlogUser for Administrator/Moderator role and apply values
+            }
+        }
+    }
+```
+
+<a name="imageService"/> 
+
+### Image Service
+
+```
+    public interface IImageService
+    {
+        //Gather image from a form input
+        Task<byte[]> EncodeImageAsync(IFormFile file);
+
+        //Gather image from within the project
+        Task<byte[]> EncodeImageAsync(string fileName);
+
+        string DecodeImage(byte[] imageData, string contentType);
+
+        //Image file extension
+        string ContentType(IFormFile file);
+
+        //Image Size
+        int Size(IFormFile file);
+    }
+```
+
+<a name="mailService"/> 
+
+### Mail Service
+
+```
+    public interface IBlogEmailSender : IEmailSender
+    {
+        //Add a new required function for implementation
+        Task SendContactEmailAsync(string emailFrom, string name, string subject, string htmlMessage); 
+    }
+```
+
+<a name="searchService"/> 
+
+### Search Service
+
+```
+    public class BlogSearchService
+    {
+        private readonly ApplicationDbContext _context;
+
+        public BlogSearchService(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public IQueryable<Post> Search(string searchTerm)
+        {
+            var posts = _context.Posts.AsQueryable();
+
+            if (searchTerm != null)
+            {
+                searchTerm = searchTerm.ToLower();
+
+                posts = posts.Where(
+                    p => p.Title.ToLower().Contains(searchTerm) ||
+                    p.Abstract.ToLower().Contains(searchTerm) ||
+                    p.Content.ToLower().Contains(searchTerm) ||
+                    p.Comments.Any(c => c.Body.ToLower().Contains(searchTerm) ||
+                                       c.ModeratedBody.ToLower().Contains(searchTerm) ||
+                                       c.BlogUser.FirstName.ToLower().Contains(searchTerm) ||
+                                       c.BlogUser.LastName.ToLower().Contains(searchTerm) ||
+                                       c.BlogUser.Email.ToLower().Contains(searchTerm)
+                                       ) ||
+                                                p.Tags.Any(t => t.Text.ToLower().Contains(searchTerm)
+                    )
+                );
+
+                posts = posts.OrderByDescending(p => p.Created);
+            }
+
+            return posts;
+        }
+
+    }
+```
+
+<a name="commentService"/> 
+
+### Comment Service 
+
+```
+    public interface ICommentService
+    {
+        /// <summary>
+        /// Generates filtered collection of parent comments from the given collection of comments
+        /// </summary>
+        /// <param name="comments">Collection of comments to filter</param>
+        /// <returns>Parent comments</returns>
+        HashSet<Comment> FilterParentComments(ICollection<Comment> comments);
+
+        /// <summary>
+        /// Determines the top level comment for a given comment within the reply chain
+        /// </summary>
+        /// <param name="replyComment">Comment within the reply chain</param>
+        /// <returns>The root comment of the reply chain</returns>
+        Task<Comment> GetTopLevelCommentAsync(Comment replyComment);
+
+        /// <summary>
+        /// Returns an integer defining the index of the given comment within the reply chain
+        /// </summary>
+        /// <param name="comment">The comment to index</param>
+        /// <param name="startIndex">Initial value used to track iteration through each level of a reply</param>
+        /// <returns>Comment's level within the reply chain</returns>
+        Task<int> GetCommentLevelAsync(Comment comment, int startIndex = 1);
+
+        /// <summary>
+        /// Generates collection of recursive replies for a given comment
+        /// </summary>
+        /// <param name="comment">Top level comment</param>
+        /// <returns>Hashset of reply tree</returns>
+        Task<HashSet<Comment>> GetCommentRepliesAsync(Comment comment);
+    }
+```
+
+<a name="slugService"/> 
+
+### Slug Service
+
+``` 
+    public interface ISlugService
+    {
+        string UrlFriendly(string title);
+        bool isUnique(string slug);
+    }
+```
