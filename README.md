@@ -360,7 +360,7 @@ Simple model used to group and search for posts on the site. Contains a definiti
 
 ## Blog Services
 
-ASP.NET as a framework makes heavy use of a concept known as **dependancy injection(DI)** and **Inversion of Control(IoC)**.
+ASP.NET as a framework makes heavy use of a concept known as **Dependancy Injection(DI)** and **Inversion of Control(IoC)**.
 
 These concepts allow components of the application to recieve other objects for which they are dependant on. Rather than instantiating an object as normal however, services are instead registered within **startup.cs** using an interface as well as an implementation of that interface. This is known as **Decoupling**, and allows different implementations of a given interface to be easily swapped and tested. These services can then be implemented using **Constructor Injection**. For example: 
 
