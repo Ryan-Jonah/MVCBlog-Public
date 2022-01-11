@@ -4,6 +4,8 @@ This is a public repository created for documentation purposes and to demonstrat
 
 Below you will find implementation details and code examples used throughout the project
 
+**Please Note:** This is an ongoing project; expect to see more features added regularly.
+
 ##### Table of Contents  
 1. [Overview](#overview)  
 2. [Models](#models)  
