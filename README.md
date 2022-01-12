@@ -37,7 +37,7 @@ Below you will find implementation details and code examples used throughout the
 | Register Page | Used to register a new user. This page was created in scaffolding.|
 | Login Page | Used to login. This page was created during scaffolding.|
 | Search Page | A page which shows results when using the search function or when selecting a tag. This page is defined within the PostsController, and using the BlogSearchService to curate a list of results.|
-| Post Page |Page which contains the most functionality and created whenever a new post is added. Displays all information related to the post including it's content and the user who posted it. This page may be thought of as the comment page as well since all commments associated with the post are displayed here. Comments do not contain a page implementation on their own.|
+| Post Page |Page which contains the most functionality and is referenced for each post. Displays all information related to the post including it's content and the user who posted it. This page may be thought of as the comment page as well since all commments associated with the post are displayed here. Comments do not contain a page implementation on their own.|
 
 <a name="models"/> 
 
